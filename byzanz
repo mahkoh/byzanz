@@ -1,0 +1,35 @@
+#!/bin/ruby
+if not (0 < ARGV.length and ARGV.length < 4) then
+    puts "USAGE: byzanz [-s] [duration] <out.gif>"
+    exit
+end
+
+select = ""
+duration = 10
+output = ""
+
+if ARGV.length == 1 then
+    output = ARGV[0]
+elsif ARGV.length == 2 then
+    if ARGV[0] == "-s" then
+        select = "-s"
+    else
+        duration = ARGV[0]
+    end
+    output = ARGV[1]
+else
+    select = "-s"
+    duration = ARGV[1]
+    output = ARGV[2]
+end
+
+params = `areasel #{select}`.split(/\n/).map{|line| line.split(/\t/)[1]}
+
+(1..3).each do |i|
+    puts "#{i}.."
+    sleep(1)
+end
+puts ""
+
+exec("byzanz-record --verbose --delay=0 --x=#{params[0]} --y=#{params[1]} \
+    --width=#{params[2]} --height=#{params[3]} --duration=#{duration} #{output}")
